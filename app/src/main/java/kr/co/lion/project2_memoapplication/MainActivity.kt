@@ -2,6 +2,7 @@ package kr.co.lion.project2_memoapplication
 
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
@@ -19,6 +20,9 @@ class MainActivity : AppCompatActivity() {
     // Activity 런처
     lateinit var inputActivityLauncher: ActivityResultLauncher<Intent>
 
+    // 메모 리스트
+    val memoList = mutableListOf<Memo>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,11 +34,30 @@ class MainActivity : AppCompatActivity() {
         setRecyclerView()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        activityMainBinding.apply {
+            // 리사이클러뷰 갱신
+            recyclerViewMain.adapter?.notifyDataSetChanged()
+        }
+    }
+
     fun setLauncher() {
         // InputActivity 런처
-        val contract1 = ActivityResultContracts.StartActivityForResult()
-        inputActivityLauncher = registerForActivityResult(contract1){
+        val InputContract = ActivityResultContracts.StartActivityForResult()
+        inputActivityLauncher = registerForActivityResult(InputContract){
+            // 메모가 정상적으로 입력되었을 경우
+            if (it.resultCode == RESULT_OK) {
+                // Intent 에서 객체 추출
+                val memo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    it.data!!.getParcelableExtra("memo", Memo::class.java)
+                } else {
+                    it.data!!.getParcelableExtra<Memo>("memo")
+                }
 
+                memoList.add(memo!!)
+            }
         }
     }
 
@@ -75,7 +98,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class RecyclerViewMainAdapter: RecyclerView.Adapter<RecyclerViewMainAdapter.ViewHolderMain>() {
         inner class ViewHolderMain (rowMainBinding: RowMainBinding) : RecyclerView.ViewHolder(rowMainBinding.root){
-            val rowMainBinding:RowMainBinding
+            val rowMainBinding: RowMainBinding
 
             init {
                 this.rowMainBinding = rowMainBinding
@@ -95,14 +118,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return 20
+            return memoList.size
         }
 
         override fun onBindViewHolder(holder: ViewHolderMain, position: Int) {
-            holder.rowMainBinding.textViewRowMainTitle.text = "제목 $position"
-            holder.rowMainBinding.textViewRowMainDate.text = "날짜 $position"
-
-
+            holder.rowMainBinding.textViewRowMainTitle.text = "${memoList[position].title}"
+            holder.rowMainBinding.textViewRowMainDate.text = "${memoList[position].date}"
         }
     }
 }
