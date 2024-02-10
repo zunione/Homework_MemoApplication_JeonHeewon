@@ -26,6 +26,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextInputTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="제목" />
@@ -37,6 +38,7 @@
             android:layout_marginTop="5dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextInputText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="내용" />
