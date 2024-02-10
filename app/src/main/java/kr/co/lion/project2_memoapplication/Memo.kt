@@ -30,6 +30,4 @@ class Memo(var title: String?, var text: String?, var date: String?) : Parcelabl
             return arrayOfNulls(size)
         }
     }
-
-
 }
