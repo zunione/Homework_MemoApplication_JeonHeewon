@@ -28,6 +28,15 @@ class InputActivity : AppCompatActivity() {
                     setResult(RESULT_CANCELED)
                     finish()
                 }
+
+                // menu_input.xml 과 연결
+                inflateMenu(R.menu.menu_input)
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        // R.id.menu_item_input_done ->
+                    }
+                    true
+                }
             }
         }
     }

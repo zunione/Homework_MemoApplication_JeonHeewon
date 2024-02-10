@@ -1,9 +1,12 @@
 package kr.co.lion.project2_memoapplication
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.divider.MaterialDividerItemDecoration
@@ -12,14 +15,27 @@ import kr.co.lion.project2_memoapplication.databinding.RowMainBinding
 
 class MainActivity : AppCompatActivity() {
     lateinit var activityMainBinding: ActivityMainBinding
+
+    // Activity 런처
+    lateinit var inputActivityLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
+        setLauncher()
         setToolbar()
         setRecyclerView()
+    }
+
+    fun setLauncher() {
+        // InputActivity 런처
+        val contract1 = ActivityResultContracts.StartActivityForResult()
+        inputActivityLauncher = registerForActivityResult(contract1){
+
+        }
     }
 
     fun setToolbar() {
@@ -32,7 +48,11 @@ class MainActivity : AppCompatActivity() {
                 inflateMenu(R.menu.menu_main)
                 setOnMenuItemClickListener {
                     when(it.itemId) {
-                        // R.id.menu_item_main_add ->
+                        R.id.menu_item_main_add -> {
+                            // InputActivity 실행
+                            val inputIntent = Intent(this@MainActivity, InputActivity::class.java)
+                            inputActivityLauncher.launch(inputIntent)
+                        }
                     }
                     true
                 }
