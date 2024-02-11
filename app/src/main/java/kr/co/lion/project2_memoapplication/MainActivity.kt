@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     // Activity 런처
     lateinit var inputActivityLauncher: ActivityResultLauncher<Intent>
+    lateinit var showActivityLauncher: ActivityResultLauncher<Intent>
 
     // 메모 리스트
     val memoList = mutableListOf<Memo>()
@@ -45,8 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     fun setLauncher() {
         // InputActivity 런처
-        val InputContract = ActivityResultContracts.StartActivityForResult()
-        inputActivityLauncher = registerForActivityResult(InputContract){
+        val inputContract = ActivityResultContracts.StartActivityForResult()
+        inputActivityLauncher = registerForActivityResult(inputContract){
             // 메모가 정상적으로 입력되었을 경우
             if (it.resultCode == RESULT_OK) {
                 // Intent 에서 객체 추출
@@ -58,6 +59,13 @@ class MainActivity : AppCompatActivity() {
 
                 memoList.add(memo!!)
             }
+        }
+
+        // ShowActivity 런처
+        val showContract = ActivityResultContracts.StartActivityForResult()
+        showActivityLauncher = registerForActivityResult(inputContract) {
+            // 여기까지함
+            
         }
     }
 
@@ -107,6 +115,16 @@ class MainActivity : AppCompatActivity() {
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
+
+                this.rowMainBinding.root.setOnClickListener {
+                    // ShowActivity 실행
+                    val showIntent = Intent(this@MainActivity, ShowActivity::class.java)
+
+                    // Intent 에 position 메모 담아준다
+                    showIntent.putExtra("memo", memoList[adapterPosition])
+
+                    showActivityLauncher.launch(showIntent)
+                }
             }
         }
 
