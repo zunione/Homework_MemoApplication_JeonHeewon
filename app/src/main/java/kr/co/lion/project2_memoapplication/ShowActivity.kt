@@ -29,7 +29,7 @@ class ShowActivity : AppCompatActivity() {
             val memo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 intent.getParcelableExtra("memo", Memo::class.java)!!
             } else {
-                intent.getParcelableExtra<Memo>("obj")!!
+                intent.getParcelableExtra<Memo>("memo")!!
             }
 
             // 객체에서 정보를 추출한다.
@@ -61,7 +61,14 @@ class ShowActivity : AppCompatActivity() {
 
                         }
                         R.id.menu_item_show_delete -> {
+                            val deleteIntent = Intent(this@ShowActivity, MainActivity::class.java)
 
+                            val position = intent.getIntExtra("position",0)
+                            deleteIntent.putExtra("position", position)
+
+                            // RESULT_OK 로 설정 = 삭제함
+                            setResult(RESULT_OK, deleteIntent)
+                            finish()
                         }
                     }
                     true

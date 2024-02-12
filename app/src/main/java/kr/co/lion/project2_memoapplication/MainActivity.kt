@@ -64,8 +64,16 @@ class MainActivity : AppCompatActivity() {
         // ShowActivity 런처
         val showContract = ActivityResultContracts.StartActivityForResult()
         showActivityLauncher = registerForActivityResult(inputContract) {
-            // 여기까지함
-            
+            // 삭제 눌러서 돌아옴
+            if (it.resultCode == RESULT_OK) {
+                // Intent 에서 객체 추출
+                val position = it.data!!.getIntExtra("position", 0)
+
+                memoList.removeAt(position)
+
+                // recyclerVIew 갱신
+                onResume()
+            }
         }
     }
 
@@ -120,8 +128,9 @@ class MainActivity : AppCompatActivity() {
                     // ShowActivity 실행
                     val showIntent = Intent(this@MainActivity, ShowActivity::class.java)
 
-                    // Intent 에 position 메모 담아준다
+                    // Intent 에 메모와 해당 position 을 담아준다
                     showIntent.putExtra("memo", memoList[adapterPosition])
+                    showIntent.putExtra("position", adapterPosition)
 
                     showActivityLauncher.launch(showIntent)
                 }
