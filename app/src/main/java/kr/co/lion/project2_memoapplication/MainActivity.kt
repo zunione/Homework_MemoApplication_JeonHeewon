@@ -2,7 +2,6 @@ package kr.co.lion.project2_memoapplication
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
@@ -20,9 +19,6 @@ class MainActivity : AppCompatActivity() {
     // Activity 런처
     lateinit var inputActivityLauncher: ActivityResultLauncher<Intent>
     lateinit var showActivityLauncher: ActivityResultLauncher<Intent>
-
-    // 메모 리스트
-    val memoList = mutableListOf<Memo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,32 +44,13 @@ class MainActivity : AppCompatActivity() {
         // InputActivity 런처
         val inputContract = ActivityResultContracts.StartActivityForResult()
         inputActivityLauncher = registerForActivityResult(inputContract){
-            // 메모가 정상적으로 입력되었을 경우
-            if (it.resultCode == RESULT_OK) {
-                // Intent 에서 객체 추출
-                val memo = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    it.data!!.getParcelableExtra("memo", Memo::class.java)
-                } else {
-                    it.data!!.getParcelableExtra<Memo>("memo")
-                }
 
-                memoList.add(memo!!)
-            }
         }
 
         // ShowActivity 런처
         val showContract = ActivityResultContracts.StartActivityForResult()
         showActivityLauncher = registerForActivityResult(inputContract) {
-            // 삭제 눌러서 돌아옴
-            if (it.resultCode == RESULT_OK) {
-                // Intent 에서 객체 추출
-                val position = it.data!!.getIntExtra("position", 0)
 
-                memoList.removeAt(position)
-
-                // recyclerVIew 갱신
-                onResume()
-            }
         }
     }
 
@@ -128,9 +105,8 @@ class MainActivity : AppCompatActivity() {
                     // ShowActivity 실행
                     val showIntent = Intent(this@MainActivity, ShowActivity::class.java)
 
-                    // Intent 에 메모와 해당 position 을 담아준다
-                    showIntent.putExtra("memo", memoList[adapterPosition])
-                    showIntent.putExtra("position", adapterPosition)
+                    // Intent 에 메모 index 를 담는다
+                    showIntent.putExtra("index", adapterPosition)
 
                     showActivityLauncher.launch(showIntent)
                 }
@@ -145,12 +121,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return memoList.size
+            return Util.memoList.size
         }
 
         override fun onBindViewHolder(holder: ViewHolderMain, position: Int) {
-            holder.rowMainBinding.textViewRowMainTitle.text = "${memoList[position].title}"
-            holder.rowMainBinding.textViewRowMainDate.text = "${memoList[position].date}"
+            holder.rowMainBinding.textViewRowMainTitle.text = "${Util.memoList[position].title}"
+            holder.rowMainBinding.textViewRowMainDate.text = "${Util.memoList[position].date}"
         }
     }
 }

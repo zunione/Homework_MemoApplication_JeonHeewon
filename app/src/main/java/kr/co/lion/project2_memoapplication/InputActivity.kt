@@ -42,18 +42,11 @@ class InputActivity : AppCompatActivity() {
                             val text = editTextInputText.text.toString()
                             val date = LocalDate.now().toString()
 
-                            // 메모 내용을 객체에 담음
+                            // 메모를 리스트에 담음
                             val memo = Memo(title, text, date)
+                            Util.memoList.add(memo)
 
-                            // 데이터를 담을 Intent 생성
-                            val inputIntent = Intent()
-
-                            Log.d("test1234", date)
-
-                            // 객체를 Intent 에 저장
-                            inputIntent.putExtra("memo", memo)
-
-                            setResult(RESULT_OK, inputIntent)
+                            setResult(RESULT_OK)
                             finish()
                         }
                     }
