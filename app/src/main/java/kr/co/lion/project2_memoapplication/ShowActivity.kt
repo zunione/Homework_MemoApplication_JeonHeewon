@@ -6,11 +6,16 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import kr.co.lion.project2_memoapplication.databinding.ActivityShowBinding
 import java.time.LocalDate
 
 class ShowActivity : AppCompatActivity() {
     lateinit var activityShowBinding: ActivityShowBinding
+
+    // Activity 런처
+    lateinit var editActivityLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +24,7 @@ class ShowActivity : AppCompatActivity() {
         setContentView(activityShowBinding.root)
 
         initTextField()
+        setLauncher()
         setToolbar()
     }
 
@@ -33,6 +39,14 @@ class ShowActivity : AppCompatActivity() {
             editTextShowTitle.setText(memo.title.toString())
             editTextShowDate.setText(memo.date.toString())
             editTextShowText.setText(memo.text.toString())
+        }
+    }
+
+    fun setLauncher() {
+        // EditActivity 런처
+        val inputContract = ActivityResultContracts.StartActivityForResult()
+        editActivityLauncher = registerForActivityResult(inputContract){
+
         }
     }
 
@@ -54,8 +68,16 @@ class ShowActivity : AppCompatActivity() {
 
                 setOnMenuItemClickListener {
                     when (it.itemId) {
+                        // 메모 수정
                         R.id.menu_item_show_edit -> {
+                            val idx = intent.getIntExtra("index",0)
 
+                            // Intent 에 인덱스 값 담음
+                            val editIntent = Intent(this@ShowActivity, EditActivity::class.java)
+                            editIntent.putExtra("index", idx)
+
+                            // EditActivity 실행
+                            editActivityLauncher.launch(editIntent)
                         }
                         // 메모 삭제
                         R.id.menu_item_show_delete -> {
