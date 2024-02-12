@@ -23,9 +23,14 @@ class ShowActivity : AppCompatActivity() {
         activityShowBinding = ActivityShowBinding.inflate(layoutInflater)
         setContentView(activityShowBinding.root)
 
-        initTextField()
         setLauncher()
         setToolbar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        initTextField()
     }
 
     fun initTextField() {
